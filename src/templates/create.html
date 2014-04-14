@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>                                                                           
+<head>                                                                           
+  <title>API</title>                                                   
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+  <script type="text/javascript" charset="utf-8">
+    function saveData(){
+      $.post("/checker/save",{title: $("#title").val(),content:$("#body").val()})
+        .done(function(data){
+            alert(data);
+        });
+    }
+  </script>                                 
+  </script>                                 
+  <style>
+    .centered{
+      float: none;
+      margin: 0 auto;
+    }
+  </style>
+</head>                                                                          
+<body>                                                                           
+  <body>
+    <div class="container">
+      <div class="col-lg-8 centered">
+        <center>
+          <h3>Device Record</h3>
+        </center>
+        <div class="well" id="log">
+          <h4>Title</h4><input type="text" class="form-control input-sm" id="title">
+          <h4>Body</h4><input type="textarea" class="form-control input-sm" id="body">
+          <button type="button" class="btn btn-success" onclick="saveData()">Post</button>
+        </div>
+      </div>
+    </div>
+  </body>                                                         
+</body>                                                                          
+</html>
+        </div>
+      </div>
+    </div>
+  </body>                                                         
+</body>                                                                          
+</html>
