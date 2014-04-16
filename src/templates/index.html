@@ -1,28 +1,82 @@
-<!DOCTYPE HTML>
-<html>                                                                           
-<head>                                                                           
-  <title>Blog Home</title> 
-  <style>
-    .centered{
-      float: none;
-      margin: 0 auto;
-    }
-  </style>
-</head>                                                                          
-<body>                                                                           
-  <body>
-    <div class="container">
-      <div class="col-lg-6 centered">
-        <center>
-          <h1>User's blog</h1>
-        </center>
-        <div class="well" id="log">
-	  {% for post in posts%}
-	  <p><h2>{{post.title}}</h2>{{post.body}}<p>
-	  {% endfor %}
-        </div>
-      </div>
-    </div>
-  </body>                                                         
-</body>                                                                          
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+	
+	<title>{{title}}</title>
+
+	
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/normalize.css') }}" />
+	<link href='http://fonts.googleapis.com/css?family=Raleway|Noticia+Text:400,400italic,700' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/style.css') }}" />
+ 
+	
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     
+
+</head>
+<body class="home-template">
+	<header id="header_wordsmith" style="background-color: black">
+		<img id="cover_wordsmith" src="{{ url_for('static', filename='assets/images/headerbg.jpg') }}">
+		<a id="blogname_wordsmith" href="index.html"><h1>{{title}}</h1></a>
+		
+		<br>
+		<div class="colorborder_wordsmith color_ws1"></div><div class="colorborder_wordsmith color_ws2"></div><div class="colorborder_wordsmith color_ws3"></div><div class="colorborder_wordsmith color_ws4"></div>
+	</header>
+
+	
+
+<div id="description_wordsmith">
+	{{description}}
+</div>
+
+<section id="content_wordsmith">
+	{% for post in posts %}
+	<article class="article_wordsmith" role="article" itemscope itemtype="http://schema.org/Article">
+		<div class="leftborder_wordsmith"></div>
+		
+		<time class="date_wordsmith helv_wordsmith" datetime="{{post.date}}" itemprop="datePublished">{{post.date}}</time>
+		
+		<h1 class="posttitle_wordsmith" itemprop="headline"><a href="{{post.link}}" rel="bookmark">{{post.title}}</a></h1>
+		
+		<div class="postcontent_wordsmith">{{post.body}}</div>
+
+		<a href="{{post.link}}" class="readmore_wordsmith helv_wordsmith">Read More</a>
+		
+	</article>
+	{% endfor %}
+
+
+</section>
+
+
+<div id="pagination_wordsmith" class="helv_wordsmith">
+	<nav class="pagination" role="pagination">
+    
+    <span class="page-number">Page 1 of 1</span>
+    
+</nav>
+</div>
+
+
+	<footer class="footer_uber">
+		<div id="socialshare_wordsmith">
+			<a target="_blank" href="http://www.facebook.com/sharer.php?u=http://wordsmith.marcosn.com"><span class="iconfont_wordsmith icon-facebook"></span></a>
+			<a target="_blank" href="http://twitter.com/share?text=&url=http://wordsmith.marcosn.com"><span class="iconfont_wordsmith icon-twitter"></span></a>
+			<a target="_blank" href="https://plus.google.com/share?url=http://wordsmith.marcosn.com"><span class="iconfont_wordsmith icon-google-plus"></span></a>
+			<a target="_blank" href="rss/index.html"><span class="iconfont_wordsmith icon-feed"></span></a>
+		</div>
+		<div id="copyright_wordsmith">© 2013 <a href="/">{{title}}</a>.</div>
+		<div id="created_wordsmith">MiniBlog Template by <a href="https://twitter.com/marcosnwp">Marcos Navarro</a>.</div>
+	</footer>
+ 	
+  	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/jquery.js') }}"></script>
+  	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+</body>
 </html>

@@ -4,7 +4,7 @@ import MySQLdb as mdb
 import random, datetime
 cnx = mdb.connect('localhost', 'root', 'wjlbti','miniblog')
 cur = cnx.cursor()
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='')
 @app.route('/create')
 def createPost():
   return render_template('create.html')
@@ -31,19 +31,24 @@ def index():
   posts = [
     {
       'title' : 'Cats are assholes',
-      'body' : 'It is widely known fact. Some cats are grumpy aswell'
+      'body' : 'It is widely known fact. Some cats are grumpy aswelli**bold**',
+      'date' : '15 Nov 2013',
+      'link' : 'check/fsfsdf'
     },
     {
       'title' : 'Dogs are good',
-      'body' : 'Dogs are most friendly creatures'
+      'body' : 'Dogs are most friendly creatures',
+      'date' : '16 Nov 2013',
+      'link' : 'check/fsdfsdfsfsdf'
     },
     {
       'title' : 'Song from Frozen is awesome',
-      'body' : 'Do you want to build a snowman, we could go out and play!!'
+      'body' : 'Do you want to build a snowman, we could go out and play!!',
+      'date' : '17 Nov 2013',
+      'link' : 'chefsdfck/fsfsdf'
     }
   ]
-  return render_template('index.html', 
-    posts=posts)
+  return render_template('index.html',title='First MiniBlog',description='This is a miniblog in Python, checkout the source at https://github.com/scottydelta/miniblog',posts=posts)
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=8000,debug=True)
   
