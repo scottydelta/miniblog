@@ -59,7 +59,9 @@
 <div id="pagination_wordsmith" class="helv_wordsmith">
 	<nav class="pagination" role="pagination">
     
-    <span class="page-number">Page 1 of 1</span>
+    <span class="page-number">Page {{page}} of {{totalpages}}</span></br>
+    <a href="/blog/{{author}}/page/{{previouspage}}" class="readmore_wordsmith helv_wordsmith" style="{{previouspage}}">&#60;&#60;Previous</a> |
+    <a href="/blog/{{author}}/page/{{nextpage}}" class="readmore_wordsmith helv_wordsmith" style="{{nextpage}}">Next&#62;&#62;</a>
     
 </nav>
 </div>

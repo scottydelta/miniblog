@@ -1,15 +1,14 @@
-from flask import Flask, request, render_template,Markup
+from flask import Flask, request, render_template,Markup,redirect
 import json, time, threading, random
 import MySQLdb as mdb
 import random, datetime,markdown
 from flask.ext.sqlalchemy import SQLAlchemy
 from models import db,Posts,app
 import config
-blog="/post/"
 @app.route('/create')
 def createPost():
   return render_template('create.html')
-@app.route('/<author>/save',methods= ['POST'])
+@app.route('/blog/<author>/save',methods= ['POST'])
 def savePost(author):
   postid = random.randint(100000000000,999999999999)
   title = str(request.form['title'])
@@ -21,15 +20,33 @@ def savePost(author):
     add = Posts(id=postid,title=title,link=link,post=content,pubDate=timestamp,author=author)
     db.session.add(add)
     db.session.commit()  
-    return redirect blog+link
+    return redirect("/blog/" + author + "/" + link)
   except Exception as e:
     print e
     return "Promlem: " + str(e)
-@app.route('/blog/<author>')
-def index():
-  posts = models.Posts.query.filter_by(author=author).order_by('pubDate desc').all()
-  text = Markup(markdown.markdown("`Bold is a good buy`"))
-  return render_template('index.html',title='First MiniBlog',description='This is a miniblog in Python, checkout the source at https://github.com/scottydelta/miniblog',posts=posts)
+@app.route('/blog/<author>/page/<pagenumber>')
+@app.route('/blog/<author>/')
+def blogindex(author,pagenumber=1):
+  req_type = type(pagenumber)
+  pagenumber = int(pagenumber)
+  start = (pagenumber-1) *2
+  end = pagenumber * 2
+  articles = Posts.query.filter_by(author=author).order_by('pubDate desc').all()
+  totalpages = len([articles[x:x+2] for x in xrange(0, len(articles), 2)])
+  articles = articles[start:end]
+  previouspage = (pagenumber-1) if (pagenumber>1) else "pointer-events:none;color:grey"
+  nextpage = (pagenumber + 1) if (pagenumber<totalpages) else "pointer-events:none;color:grey"
+  posts = []
+  relative_path = "../../" if req_type=="unicode" else "../"
+  for article in articles:
+    post = {
+            'title' : article.title,
+            'body' : Markup(markdown.markdown(article.description)),
+            'date' : article.pubDate.strftime('%b %d, %Y'),
+            'link' : relative_path + author + "/" + article.link
+          }
+    posts.append(post)
+  return render_template('index.html',title='First MiniBlog',description='This is a miniblog in Python, checkout the source at https://github.com/scottydelta/miniblog',posts=posts, page=pagenumber, totalpages=totalpages,author=author,previouspage = previouspage,nextpage=nextpage)
 if __name__ == "__main__":
-  app.run(host="0.0.0.0", port=8000)
+  app.run(host="0.0.0.0", port=8000,debug=True)
   
