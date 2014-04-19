@@ -7,7 +7,7 @@ from models import db,Posts,Authors,app
 import config
 @app.route('/blog/<author>/create')
 def createPost(author):
-  return render_template('post.html', title="First MiniBlog")
+  return render_template('create.html')
 @app.route('/blog/<author>/<link>')
 def getpost(author, link):
   article = Posts.query.filter_by(author=author, link=link).first()
@@ -42,7 +42,7 @@ def savePost(author):
 @app.route('/blog/<author>/page/<pagenumber>')
 @app.route('/blog/<author>/')
 def blogindex(author,pagenumber=1):
-  req_type = type(pagenumber)
+  pgnumber  = pagenumber
   pagenumber = int(pagenumber)
   start = (pagenumber-1) *2
   end = pagenumber * 2
@@ -52,7 +52,8 @@ def blogindex(author,pagenumber=1):
   previouspage = (pagenumber-1) if (pagenumber>1) else "pointer-events:none;color:grey"
   nextpage = (pagenumber + 1) if (pagenumber<totalpages) else "pointer-events:none;color:grey"
   posts = []
-  relative_path = "../../" if req_type=="unicode" else "../"
+  relative_path = "../../" if isinstance(pgnumber, unicode) else "../"
+  print relative_path
   for article in articles:
     post = {
             'title' : article.title,
