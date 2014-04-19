@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+  
+	<title>{{title}}</title>
+
+
+  
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/normalize.css') }}" />
+	<link href='http://fonts.googleapis.com/css?family=Raleway|Noticia+Text:400,400italic,700' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/style.css') }}" />
+ 
+  
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     
+<meta name="generator" content="Ghost 0.3" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="/rss/">
+</head>
+<body class="post-template tag-headings">
+  <header id="header_wordsmith" style="background-color: black">
+    <img id="cover_wordsmith" src="{{ url_for('static', filename='assets/images/headerbg.jpg') }}">
+    <a id="blogname_wordsmith" href="./"><h1>{{title}}</h1></a>
+    
+    <br>
+    <div class="colorborder_wordsmith color_ws1"></div><div class="colorborder_wordsmith color_ws2"></div><div class="colorborder_wordsmith color_ws3"></div><div class="colorborder_wordsmith color_ws4"></div>
+  </header>
+
+  
+
+<section id="content_wordsmith">
+
+  <article class="article_wordsmith" role="article" itemscope itemtype="http://schema.org/Article">
+    
+    <time class="date_wordsmith helv_wordsmith" datetime="{{post.date}}" itemprop="datePublished">{{post.date}}</time><span class="helv_wordsmith"> on Headings</span>
+    
+    <h1 class="posttitle_wordsmith" itemprop="headline">{{post.title}}</h1>
+    
+    <div class="postcontent_wordsmith">
+      {{post.body}}
+    </div>
+
+    
+      <div id="author_wordsmith">
+        <address itemscope itemtype="http://schema.org/Person">
+          
+            <div class="authorimage_wordsmith"><img src="{{ url_for('static', filename='assets/images/' + author.pic) }}" itemprop="image" /></div>
+          
+            <div class="authordata_wordsmith">
+              <span itemprop="author">{{author.name}}</span><br>
+              
+              <a href="http://marcosn.com" itemprop="url">http://marcosn.com</a>
+              <p>{{author.bio}}</p>
+              
+            </div>
+        </address>
+      </div>
+      
+    
+  </article>
+
+</section>
+
+
+
+  <footer class="footer_uber">
+    <div id="socialshare_wordsmith">
+      <a target="_blank" href="http://www.facebook.com/sharer.php?u=http://wordsmith.marcosn.com"><span class="iconfont_wordsmith icon-facebook"></span></a>
+      <a target="_blank" href="http://twitter.com/share?text=&url=http://wordsmith.marcosn.com"><span class="iconfont_wordsmith icon-twitter"></span></a>
+      <a target="_blank" href="https://plus.google.com/share?url=http://wordsmith.marcosn.com"><span class="iconfont_wordsmith icon-google-plus"></span></a>
+      <a target="_blank" href="http://wordsmith.marcosn.com/rss/"><span class="iconfont_wordsmith icon-feed"></span></a>
+    </div>
+    <div id="copyright_wordsmith">© 2013 <a href="/">{{title}}</a>.</div>
+    <div id="created_wordsmith">Ghost Theme by<a href="https://twitter.com/marcosnwp"> Marcos Navarro</a>.</div>
+  </footer>
+  
+<script type="text/javascript" src="{{ url_for('static', filename='assets/js/jquery.js') }}"></script>
+  	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+</body>
+</html>

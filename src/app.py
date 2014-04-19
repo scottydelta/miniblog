@@ -3,11 +3,26 @@ import json, time, threading, random
 import MySQLdb as mdb
 import random, datetime,markdown
 from flask.ext.sqlalchemy import SQLAlchemy
-from models import db,Posts,app
+from models import db,Posts,Authors,app
 import config
-@app.route('/create')
-def createPost():
-  return render_template('create.html')
+@app.route('/blog/<author>/create')
+def createPost(author):
+  return render_template('post.html', title="First MiniBlog")
+@app.route('/blog/<author>/<link>')
+def getpost(author, link):
+  article = Posts.query.filter_by(author=author, link=link).first()
+  author_data = Authors.query.filter_by(username = author).first()
+  post = {
+          'title':article.title,
+          'date': article.pubDate.strftime('%b %d, %Y'),
+          'body': Markup(markdown.markdown(article.post))
+        }
+  author = {
+            'name' : author_data.name,
+            'bio' : author_data.bio,
+            'pic' : "authors/" + author_data.pic
+          }
+  return render_template('post.html', title=author_data.title,post=post,author=author)   
 @app.route('/blog/<author>/save',methods= ['POST'])
 def savePost(author):
   postid = random.randint(100000000000,999999999999)

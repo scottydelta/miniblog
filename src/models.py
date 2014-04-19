@@ -21,8 +21,23 @@ class Posts(db.Model):
     self.title = title
     self.link = link
     self.description = desp
-class Users(db.Model):
-  __tablename__ = 'users'
-  id = db.Column(db.Integer, primary_key=True)
-  username = db.Column(db.String(30),unique=True)
+class Authors(db.Model):
+  __tablename__ = 'authors'
+  username = db.Column(db.String(30),primary_key=True)
+  name = db.Column(db.String(40))
+  bio = db.Column(db.String(300))
+  title = db.Column(db.String(20))
+  fb = db.Column(db.String(30))
+  github = db.Column(db.String(30))
+  twitter = db.Column(db.String(30))
+  pic = db.Column(db.String(100))
+  def __init__(self,username,name,bio,title,fb,github,twitter,pic):
+    self.username = username
+    self.name= name
+    self.bio = bio
+    self.title = title
+    self.fb = fb
+    self.github = github
+    self.twitter = twitter
+    self.pic = pic
 
