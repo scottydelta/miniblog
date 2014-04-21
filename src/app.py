@@ -3,9 +3,37 @@ import json, time, threading, random
 import MySQLdb as mdb
 import random, datetime,markdown
 from flask.ext.sqlalchemy import SQLAlchemy
-from models import db,Posts,Authors,app
+from models import db,Posts,Authors,Users,app
+from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
 import config
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+@login_manager.user_loader
+def load_user(id):
+  return Users.query.get(int(id))
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+  if request.method == 'GET':
+    username = request.args.get('username')
+    password = request.args.get('password')
+    registered_user = Users.query.filter_by(username=username,password=password).first()
+    if not registered_user:
+     # flash('Username or Password is invalid' , 'error')
+      return "Not logged In"
+    login_user(registered_user)
+    #flask('Logged in successfully')
+    return "Logged in"
+@app.route('/logout', methods=['GET'])
+def logout():
+  logout_user()
+  return "logged out"
+
+
+
 @app.route('/blog/<author>/create')
+@login_required
 def createPost(author):
   return render_template('create.html')
 @app.route('/blog/<author>/<link>')
@@ -42,7 +70,7 @@ def savePost(author):
 @app.route('/blog/<author>/page/<pagenumber>')
 @app.route('/blog/<author>/')
 def blogindex(author,pagenumber=1):
-  pgnumber  = pagenumber
+  relative_path = "../../" if isinstance(pagenumber, unicode) else "../"
   pagenumber = int(pagenumber)
   start = (pagenumber-1) *2
   end = pagenumber * 2
@@ -52,7 +80,6 @@ def blogindex(author,pagenumber=1):
   previouspage = (pagenumber-1) if (pagenumber>1) else "pointer-events:none;color:grey"
   nextpage = (pagenumber + 1) if (pagenumber<totalpages) else "pointer-events:none;color:grey"
   posts = []
-  relative_path = "../../" if isinstance(pgnumber, unicode) else "../"
   print relative_path
   for article in articles:
     post = {
@@ -64,5 +91,6 @@ def blogindex(author,pagenumber=1):
     posts.append(post)
   return render_template('index.html',title='First MiniBlog',description='This is a miniblog in Python, checkout the source at https://github.com/scottydelta/miniblog',posts=posts, page=pagenumber, totalpages=totalpages,author=author,previouspage = previouspage,nextpage=nextpage)
 if __name__ == "__main__":
+  app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
   app.run(host="0.0.0.0", port=8000,debug=True)
   
