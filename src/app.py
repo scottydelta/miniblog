@@ -23,10 +23,8 @@ def login():
   print username, password
   registered_user = Users.query.filter_by(username=username,password=password).first()
   if not registered_user:
-   # flash('Username or Password is invalid' , 'error')
     return "Not logged In"
   login_user(registered_user)
-  #flask('Logged in successfully')
   if request.args.get('next'):
     return redirect(request.args.get('next'))
   return "Logged in"
@@ -63,7 +61,6 @@ def getpost(author, link):
   article = Posts.query.filter_by(author=author, link=link).first()
   if article:
     author_data = Authors.query.filter_by(username = author).first()
-    print markdown.markdown(article.post,['fenced_code'])
     post = {
             'title':article.title,
             'date': article.pubDate.strftime('%b %d, %Y'),
@@ -99,6 +96,9 @@ def blogindex(author,pagenumber=1):
           }
     posts.append(post)
   return render_template('index.html',title='First MiniBlog',description='This is a miniblog in Python, checkout the source at https://github.com/scottydelta/miniblog',posts=posts, page=pagenumber, totalpages=totalpages,author=author,previouspage = previouspage,nextpage=nextpage)
+@app.route('/')
+def index():
+  return redirect('/blog/vikash')
 if __name__ == "__main__":
   app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
   app.run(host="0.0.0.0", port=8000,debug=True)
