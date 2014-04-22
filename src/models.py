@@ -45,9 +45,11 @@ class Users(db.Model):
   id = db.Column('user_id',db.Integer , primary_key=True)
   username = db.Column(db.String(30))
   password = db.Column(db.String(30))
-  def __init__(self,username,password):
+  role = db.Column(db.String(10))
+  def __init__(self,username,password,role):
     self.username = username
     self.password = password
+    self.role=role
   def is_authenticated(self):
     return True
  
@@ -56,7 +58,6 @@ class Users(db.Model):
  
   def is_anonymous(self):
     return False
- 
   def get_id(self):
     return unicode(self.id)
   def __repr__(self):

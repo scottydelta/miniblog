@@ -16,15 +16,20 @@ def load_user(id):
 @app.route('/login', methods=['GET','POST'])
 def login():
   if request.method == 'GET':
-    username = request.args.get('username')
-    password = request.args.get('password')
-    registered_user = Users.query.filter_by(username=username,password=password).first()
-    if not registered_user:
-     # flash('Username or Password is invalid' , 'error')
-      return "Not logged In"
-    login_user(registered_user)
-    #flask('Logged in successfully')
-    return "Logged in"
+    return render_template('login.html')
+  print request.args
+  username = request.form['username']
+  password = request.form['password']
+  print username, password
+  registered_user = Users.query.filter_by(username=username,password=password).first()
+  if not registered_user:
+   # flash('Username or Password is invalid' , 'error')
+    return "Not logged In"
+  login_user(registered_user)
+  #flask('Logged in successfully')
+  if request.args.get('next'):
+    return redirect(request.args.get('next'))
+  return "Logged in"
 @app.route('/logout', methods=['GET'])
 def logout():
   logout_user()
@@ -32,41 +37,45 @@ def logout():
 
 
 
-@app.route('/blog/<author>/create')
+@app.route('/blog/<author>/create', methods=['GET','POST'])
 @login_required
 def createPost(author):
-  return render_template('create.html')
+  if request.method=='GET':
+    if current_user.username==author:
+      return render_template('create.html')
+    return "Are you not " + current_user.username+", Login with different user?"
+  else:
+    if current_user.username==author:
+      postid = random.randint(100000000000,999999999999)
+      title = request.form['title']
+      desp = request.form['description']
+      body = request.form['body']
+      link = title.split(" ")
+      link = "-".join(link[0:6])
+      timestamp = datetime.datetime.now()
+      add = Posts(id=postid,title=title,link=link,post=body,pubDate=timestamp,author=author,desp=desp)
+      db.session.add(add)
+      db.session.commit()  
+      return redirect('/blog/' + author + '/' + link)
+    return "Are you not " + current_user.username+", Login with different user?"
 @app.route('/blog/<author>/<link>')
 def getpost(author, link):
   article = Posts.query.filter_by(author=author, link=link).first()
-  author_data = Authors.query.filter_by(username = author).first()
-  post = {
-          'title':article.title,
-          'date': article.pubDate.strftime('%b %d, %Y'),
-          'body': Markup(markdown.markdown(article.post))
-        }
-  author = {
-            'name' : author_data.name,
-            'bio' : author_data.bio,
-            'pic' : "authors/" + author_data.pic
+  if article:
+    author_data = Authors.query.filter_by(username = author).first()
+    print markdown.markdown(article.post,['fenced_code'])
+    post = {
+            'title':article.title,
+            'date': article.pubDate.strftime('%b %d, %Y'),
+            'body': Markup(markdown.markdown(article.post,['fenced_code']))
           }
-  return render_template('post.html', title=author_data.title,post=post,author=author)   
-@app.route('/blog/<author>/save',methods= ['POST'])
-def savePost(author):
-  postid = random.randint(100000000000,999999999999)
-  title = str(request.form['title'])
-  link = title.split(" ")
-  link = "-".join(link[0:6])
-  content = str(request.form['content'])
-  timestamp = datetime.datetime.now()
-  try:
-    add = Posts(id=postid,title=title,link=link,post=content,pubDate=timestamp,author=author)
-    db.session.add(add)
-    db.session.commit()  
-    return redirect("/blog/" + author + "/" + link)
-  except Exception as e:
-    print e
-    return "Promlem: " + str(e)
+    author = {
+              'name' : author_data.name,
+              'bio' : author_data.bio,
+              'pic' : "authors/" + author_data.pic
+            }
+    return render_template('post.html', title=author_data.title,post=post,author=author)
+  return "hakuna matata"   
 @app.route('/blog/<author>/page/<pagenumber>')
 @app.route('/blog/<author>/')
 def blogindex(author,pagenumber=1):
