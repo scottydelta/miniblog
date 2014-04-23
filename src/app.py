@@ -1,14 +1,16 @@
-from flask import Flask, request, render_template,Markup,redirect
+from flask import Flask, request, render_template,Markup,redirect,session
 import json, time, threading, random
 import MySQLdb as mdb
 import random, datetime,markdown
 from flask.ext.sqlalchemy import SQLAlchemy
 from models import db,Posts,Authors,Users,app
 from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
-import config
+import config,os
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+#session.permanent = True
+app.permanent_session_lifetime = datetime.timedelta(minutes=30)
 @login_manager.user_loader
 def load_user(id):
   return Users.query.get(int(id))
@@ -33,6 +35,43 @@ def logout():
   logout_user()
   return "logged out"
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in set(['png', 'jpg', 'jpeg', 'gif'])
+
+@app.route('/blog/<author>/settings', methods=['GET','POST'])
+@login_required
+def settings(author):
+  if request.method=='GET':
+    if current_user.username == author:
+      author = Authors.query.filter_by(username=author).first()
+      return render_template('settings_authors.html', author=author)
+    return "Occured, a 404 error has, How Embarrasing."
+  else:
+    if current_user.username == author:
+      name = request.form['name']
+      bio = request.form['bio']
+      desp = request.form['desp']
+      title = request.form['title']
+      github = request.form['github']
+      link = request.form['link']
+      print request.files
+      file = request.files['file']
+      print file
+      if file and allowed_file(file.filename):
+        filename = author + "." +file.filename.rsplit('.',1)[1]
+        file.save(os.path.join('static/assets/images/authors/',filename))
+      author_data = Authors.query.filter_by(username=author).first()
+      author_data.name=name
+      author_data.bio=bio
+      author_data.link=link
+      author_data.desp=desp
+      author_data.title=title
+      author_data.github=github
+      author_data.pic=filename
+      db.session.commit()
+      return "Saved"
+    return "Occured, a 404 error has, How Embarrasing."
 
 
 @app.route('/blog/<author>/create', methods=['GET','POST'])
@@ -41,7 +80,7 @@ def createPost(author):
   if request.method=='GET':
     if current_user.username==author:
       return render_template('create.html')
-    return "Are you not " + current_user.username+", Login with different user?"
+    return "Occured, a 404 error has, How Embarrasing."
   else:
     if current_user.username==author:
       postid = random.randint(100000000000,999999999999)
@@ -69,7 +108,8 @@ def getpost(author, link):
     author = {
               'name' : author_data.name,
               'bio' : author_data.bio,
-              'pic' : "authors/" + author_data.pic
+              'pic' : "authors/" + author_data.pic,
+              'link' : author_data.link
             }
     return render_template('post.html', title=author_data.title,post=post,author=author)
   return "hakuna matata"   
@@ -81,6 +121,7 @@ def blogindex(author,pagenumber=1):
   start = (pagenumber-1) *2
   end = pagenumber * 2
   articles = Posts.query.filter_by(author=author).order_by('pubDate desc').all()
+  author_data = Authors.query.filter_by(username=author).first()
   totalpages = len([articles[x:x+2] for x in xrange(0, len(articles), 2)])
   articles = articles[start:end]
   previouspage = (pagenumber-1) if (pagenumber>1) else "pointer-events:none;color:grey"
@@ -95,7 +136,7 @@ def blogindex(author,pagenumber=1):
             'link' : relative_path + author + "/" + article.link
           }
     posts.append(post)
-  return render_template('index.html',title='First MiniBlog',description='This is a miniblog in Python, checkout the source at https://github.com/scottydelta/miniblog',posts=posts, page=pagenumber, totalpages=totalpages,author=author,previouspage = previouspage,nextpage=nextpage)
+  return render_template('index.html',title=author_data.title,description=author_data.desp,posts=posts, page=pagenumber, totalpages=totalpages,author=author,previouspage = previouspage,nextpage=nextpage)
 @app.route('/')
 def index():
   return redirect('/blog/vikash')

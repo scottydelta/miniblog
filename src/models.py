@@ -26,19 +26,19 @@ class Authors(db.Model):
   username = db.Column(db.String(30),primary_key=True)
   name = db.Column(db.String(40))
   bio = db.Column(db.String(300))
+  desp = db.Column(db.String(300))
   title = db.Column(db.String(20))
-  fb = db.Column(db.String(30))
   github = db.Column(db.String(30))
-  twitter = db.Column(db.String(30))
+  link = db.Column(db.String(200))
   pic = db.Column(db.String(100))
-  def __init__(self,username,name,bio,title,fb,github,twitter,pic):
+  def __init__(self,username,name,bio,title,link,github,pic,desp):
     self.username = username
     self.name= name
     self.bio = bio
     self.title = title
-    self.fb = fb
+    self.link = link
+    self.desp=desp
     self.github = github
-    self.twitter = twitter
     self.pic = pic
 class Users(db.Model):
   __tablename__='users'

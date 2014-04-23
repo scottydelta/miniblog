@@ -1,0 +1,28 @@
+<html>
+<head>
+
+</head>
+<body>
+<form id="form" name="form" action="" method="post" enctype="multipart/form-data">
+	<div id="block">
+		<label>username:</label>{{author.username}}</br>
+		<label id="name">Name:</label>
+		<input type="text" name="name" value="{{author.name}}" required/></br>
+		<labe>About The Author: </label>
+		<textarea rows="4" cols="50" id="bio" name="bio" required>{{author.bio}} </textarea> </br>
+		<label>Blog Description: </label>
+		<textarea rows="4" cols="50" id="desp" name="desp" required>{{author.desp}} </textarea> </br>
+		<label id="title">Blog Title: </label>
+		<input type="text" name="title" value="{{author.title}}" required /></br>
+		<label id="link">Link: </label>
+		<input type="text" name="link" value="{{author.link}}" required /></br>
+		<label id="github">Github: </label>
+		<input type="text" name="github" value="{{author.github}}" required /></br>
+		<label id="image">Image: </label>
+		<input type=file name="file" accept="image/*">
+		<input type="submit" id="submit" name="submit" value="Save"/>
+	</div>
+</form>
+
+</body>
+</html>
